@@ -1,0 +1,11 @@
+import { prisma } from '@/lib/db'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const reservation = await prisma.reservation.findUnique({
+    where: { id: params.id },
+    include: { product: true, warehouse: true }
+  })
+  if (!reservation) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  return NextResponse.json(reservation)
+}
