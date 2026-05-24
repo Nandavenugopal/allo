@@ -17,19 +17,33 @@ export default function HomePage() {
 
   const handleReserve = async (productId: string, warehouseId: string) => {
     setError('')
-    const res = await fetch('/api/reservations', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId, warehouseId, quantity: 1 })
-    })
+    try {
+      const res = await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, warehouseId, quantity: 1 })
+      })
 
-    if (res.status === 409) {
-      setError('Sorry! This item just went out of stock.')
-      return
+      if (res.status === 409) {
+        setError('Sorry! This item just went out of stock.')
+        return
+      }
+
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error || 'Failed to create reservation')
+        return
+      }
+
+      const reservation = await res.json()
+      if (!reservation?.id) {
+        setError('Invalid response from server')
+        return
+      }
+      router.push(`/reservation/${reservation.id}`)
+    } catch (err) {
+      setError('Network error - please try again')
     }
-
-    const reservation = await res.json()
-    router.push(`/reservation/${reservation.id}`)
   }
 
   if (loading) return <div className="p-8">Loading products...</div>
