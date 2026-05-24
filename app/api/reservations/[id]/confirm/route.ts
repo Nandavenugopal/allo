@@ -63,7 +63,11 @@ export async function POST(
     }),
     prisma.reservation.update({
       where: { id },
-      data: { status: 'CONFIRMED' }
+      data: { status: 'CONFIRMED' },
+      include: {
+        product: true,
+        warehouse: true
+      }
     })
   ])
 
