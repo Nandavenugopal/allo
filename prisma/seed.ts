@@ -5,43 +5,67 @@ const prisma = new PrismaClient()
 async function main() {
   // Create warehouses
   const mumbai = await prisma.warehouse.create({
-    data: { name: 'Mumbai Central', location: 'Mumbai, India' }
+    data: { name: 'Hyderabad', location: 'Hyderabad India' }
   })
   const delhi = await prisma.warehouse.create({
-    data: { name: 'Delhi North', location: 'Delhi, India' }
+    data: { name: 'Vijayawada North', location: 'Vijayawada, India' }
   })
 
   // Create products
-  const laptop = await prisma.product.create({
+  const bottle = await prisma.product.create({
     data: {
-      name: 'Pro Laptop 15"',
-      description: 'High performance laptop',
-      price: 89999,
+      name: 'milton waterbottle"',
+      description: 'Highly durable and insulated water bottle',
+      price: 999,
     }
   })
-  const phone = await prisma.product.create({
+  const shoes = await prisma.product.create({
     data: {
-      name: 'Smartphone X12',
-      description: 'Latest flagship phone',
-      price: 49999,
+      name: 'nike running shoes',
+      description: 'Comfortable and durable running shoes',
+      price: 3999,
     }
   })
-  const headphones = await prisma.product.create({
+  const Notebooks = await prisma.product.create({
     data: {
-      name: 'Wireless Headphones',
-      description: 'Noise cancelling',
-      price: 12999,
+      name: 'spiral notebooks',
+      description: 'Set of 5 spiral notebooks with 200 pages each',
+      price: 999,
+    }
+  })
+  const Honey = await prisma.product.create({
+    data: {
+      name: 'honey',
+      description: 'Pure and natural honey sourced from locals',
+      price: 699,
+    }
+  })
+  const TrackPants = await prisma.product.create({
+    data: {
+      name: 'track pants',
+      description: 'Comfortable and durable track pants',
+      price: 1999,
+    }
+  })
+  const IndianMasalas = await prisma.product.create({
+    data: {
+      name: 'indian masalas',
+      description: 'A set of authentic indian spices and masalas',
+      price: 399,
     }
   })
 
   // Create stock (product in warehouses)
   await prisma.stock.createMany({
     data: [
-      { productId: laptop.id, warehouseId: mumbai.id, total: 5, reserved: 0 },
-      { productId: laptop.id, warehouseId: delhi.id, total: 3, reserved: 0 },
-      { productId: phone.id, warehouseId: mumbai.id, total: 10, reserved: 0 },
-      { productId: phone.id, warehouseId: delhi.id, total: 1, reserved: 0 }, // Only 1 left!
-      { productId: headphones.id, warehouseId: mumbai.id, total: 20, reserved: 0 },
+      { productId: bottle.id, warehouseId: mumbai.id, total: 5, reserved: 0 },
+      { productId: bottle.id, warehouseId: delhi.id, total: 3, reserved: 0 },
+      { productId: shoes.id, warehouseId: mumbai.id, total: 10, reserved: 0 },
+      { productId: shoes.id, warehouseId: delhi.id, total: 1, reserved: 0 }, // Only 1 left!
+      { productId: Notebooks.id, warehouseId: mumbai.id, total: 20, reserved: 0 },
+      { productId: Honey.id, warehouseId: mumbai.id, total: 15, reserved: 0 },
+      { productId: TrackPants.id, warehouseId: delhi.id, total: 8, reserved: 0 },
+      { productId: IndianMasalas.id, warehouseId: mumbai.id, total: 25, reserved: 0 },
     ]
   })
 
