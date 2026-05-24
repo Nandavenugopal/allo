@@ -4,10 +4,10 @@ const prisma = new PrismaClient()
 
 async function main() {
   // Create warehouses
-  const mumbai = await prisma.warehouse.create({
+  const Hyderabad = await prisma.warehouse.create({
     data: { name: 'Hyderabad', location: 'Hyderabad India' }
   })
-  const delhi = await prisma.warehouse.create({
+  const VijayawadaNorth = await prisma.warehouse.create({
     data: { name: 'Vijayawada North', location: 'Vijayawada, India' }
   })
 
@@ -58,14 +58,14 @@ async function main() {
   // Create stock (product in warehouses)
   await prisma.stock.createMany({
     data: [
-      { productId: bottle.id, warehouseId: mumbai.id, total: 5, reserved: 0 },
-      { productId: bottle.id, warehouseId: delhi.id, total: 3, reserved: 0 },
-      { productId: shoes.id, warehouseId: mumbai.id, total: 10, reserved: 0 },
-      { productId: shoes.id, warehouseId: delhi.id, total: 1, reserved: 0 }, // Only 1 left!
-      { productId: Notebooks.id, warehouseId: mumbai.id, total: 20, reserved: 0 },
-      { productId: Honey.id, warehouseId: mumbai.id, total: 15, reserved: 0 },
-      { productId: TrackPants.id, warehouseId: delhi.id, total: 8, reserved: 0 },
-      { productId: IndianMasalas.id, warehouseId: mumbai.id, total: 25, reserved: 0 },
+      { productId: bottle.id, warehouseId: Hyderabad.id, total: 5, reserved: 0 },
+      { productId: bottle.id, warehouseId: VijayawadaNorth.id, total: 3, reserved: 0 },
+      { productId: shoes.id, warehouseId: Hyderabad.id, total: 10, reserved: 0 },
+      { productId: shoes.id, warehouseId: VijayawadaNorth.id, total: 1, reserved: 0 }, // Only 1 left!
+      { productId: Notebooks.id, warehouseId: Hyderabad.id, total: 20, reserved: 0 },
+      { productId: Honey.id, warehouseId: Hyderabad.id, total: 15, reserved: 0 },
+      { productId: TrackPants.id, warehouseId: VijayawadaNorth.id, total: 8, reserved: 0 },
+      { productId: IndianMasalas.id, warehouseId: Hyderabad.id, total: 25, reserved: 0 },
     ]
   })
 
