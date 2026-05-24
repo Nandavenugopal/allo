@@ -3,14 +3,19 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   const reservation = await prisma.reservation.findUnique({
-    where: { id: params.id }
+    where: { id }
   })
 
   if (!reservation) {
-    return NextResponse.json({ error: 'Reservation not found' }, { status: 404 })
+    return NextResponse.json(
+      { error: 'Reservation not found' },
+      { status: 404 }
+    )
   }
 
   // Check if expired
@@ -19,35 +24,45 @@ export async function POST(
     if (reservation.status === 'PENDING') {
       await prisma.$transaction([
         prisma.stock.update({
-          where: { productId_warehouseId: { 
-            productId: reservation.productId, 
-            warehouseId: reservation.warehouseId 
-          }},
-          data: { reserved: { decrement: reservation.quantity } }
+          where: {
+            productId_warehouseId: {
+              productId: reservation.productId,
+              warehouseId: reservation.warehouseId
+            }
+          },
+          data: {
+            reserved: { decrement: reservation.quantity }
+          }
         }),
         prisma.reservation.update({
-          where: { id: params.id },
+          where: { id },
           data: { status: 'RELEASED' }
         })
       ])
     }
-    return NextResponse.json({ error: 'Reservation has expired' }, { status: 410 })
+
+    return NextResponse.json(
+      { error: 'Reservation has expired' },
+      { status: 410 }
+    )
   }
 
-  // Confirm: decrement total stock AND reserved (units are now "sold")
+  // Confirm reservation
   const [, updated] = await prisma.$transaction([
     prisma.stock.update({
-      where: { productId_warehouseId: { 
-        productId: reservation.productId, 
-        warehouseId: reservation.warehouseId 
-      }},
+      where: {
+        productId_warehouseId: {
+          productId: reservation.productId,
+          warehouseId: reservation.warehouseId
+        }
+      },
       data: {
         total: { decrement: reservation.quantity },
         reserved: { decrement: reservation.quantity }
       }
     }),
     prisma.reservation.update({
-      where: { id: params.id },
+      where: { id },
       data: { status: 'CONFIRMED' }
     })
   ])
